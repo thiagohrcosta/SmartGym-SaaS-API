@@ -7,6 +7,7 @@ on:
 
 jobs:
   scan_ruby:
+    name: Security Scan (Brakeman)
     runs-on: ubuntu-latest
 
     steps:
@@ -19,11 +20,13 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
-      - name: Scan for common Rails security vulnerabilities using static analysis
+      - name: Scan for Rails security vulnerabilities
         run: bin/brakeman --no-pager
 
   lint:
+    name: Lint (RuboCop)
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -34,6 +37,46 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
-      - name: Lint code for consistent style
+      - name: Run RuboCop
         run: bin/rubocop -f github
 
+  test:
+    name: Test (RSpec)
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        ports: ['5432:5432']
+        env:
+          POSTGRES_DB: smartgym_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd="pg_isready"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      RAILS_ENV: test
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/smartgym_test
+      JWT_SECRET_KEY: test_secret
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
+
+      - name: Setup database
+        run: |
+          bin/rails db:create
+          bin/rails db:schema:load
+
+      - name: Run tests
+        run: bundle exec rspec

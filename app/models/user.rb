@@ -14,6 +14,4 @@ class User < ApplicationRecord
     gym_admin: 2,
     super_admin: 3,
   }
-
-  validates :gym, presence: true, unless: :super_admin?
 end
