@@ -1,0 +1,10 @@
+{
+  "ignored_warnings": [
+    {
+      "warning_type": "Unmaintained Dependency",
+      "warning_code": 121,
+      "fingerprint": "8e0f0b9e4a6a1f9c1c8f0f8c5d3b2a1e",
+      "note": "Ruby version is EOL. Upgrade planned after MVP stabilization."
+    }
+  ]
+}
