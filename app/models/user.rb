@@ -9,7 +9,7 @@ class User < ApplicationRecord
   validates :username, presence: true
 
   enum role: {
-    user: 0
+    user: 0,
     trainer: 1,
     gym_admin: 2,
     super_admin: 3,

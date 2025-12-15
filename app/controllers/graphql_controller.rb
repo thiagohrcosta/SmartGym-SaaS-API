@@ -1,6 +1,5 @@
 # app/controllers/graphql_controller.rb
 class GraphqlController < ApplicationController
-  # 🔐 Protege o endpoint GraphQL inteiro
   # before_action :authenticate_user!
 
   def execute
